@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Consulta de Citas</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<h2>Consulta de Citas</h2>
+
+<form action="/citas/filtrar" method="get">
+    <label>Filtrar por Fecha:</label>
+    <input type="date" name="fecha">
+    <label>Filtrar por Doctor:</label>
+    <select name="doctorId">
+        <option value="">Todos</option>
+        <option th:each="doctor : ${doctores}" th:value="${doctor.id}" th:text="${doctor.nombre}"></option>
+    </select>
+    <button type="submit">Buscar</button>
+</form>
+
+<table>
+    <tr>
+        <th>Doctor</th>
+        <th>Paciente</th>
+        <th>Horario</th>
+        <th>Consultorio</th>
+        <th>Acción</th>
+    </tr>
+    <tr th:each="cita : ${citas}">
+        <td th:text="${cita.doctor.nombre}"></td>
+        <td th:text="${cita.nombrePaciente}"></td>
+        <td th:text="${cita.horario}"></td>
+        <td th:text="${cita.consultorio.numero}"></td>
+        <td>
+            <form action="/citas/cancelar" method="post">
+                <input type="hidden" name="citaId" th:value="${cita.id}">
+                <button type="submit" th:if="${cita.horario.isAfter(T(java.time.LocalDateTime).now())}">Cancelar</button>
+            </form>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
